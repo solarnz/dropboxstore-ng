@@ -44,7 +44,7 @@ gulp.task('test', function() {
 gulp.task('test:dev', function() {
   return runKarma({
     action: 'autowatch',
-    reporters: ['mocha'],
+    reporters: ['mocha', 'coverage'],
     mochaReporter: {
       output: 'autowatch'
     }
