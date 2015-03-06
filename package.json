@@ -1,0 +1,30 @@
+{
+  "name": "dropboxstore-ng",
+  "version": "0.1.0",
+  "description": "An angular wrapper around the dropbox sdk",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp-karma": "^0.0.4",
+    "gulp-jshint": "^1.9.2",
+    "jasmine-core": "^2.2.0",
+    "gulp": "^3.8.11",
+    "karma": "^0.12.31",
+    "karma-mocha-reporter": "^1.0.0",
+    "karma-jasmine": "^0.3.5"
+  },
+  "devDependencies": {
+    "jshint-stylish": "^1.0.1",
+    "karma-coverage": "^0.2.7",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "main-bower-files": "^2.5.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chris Trotman <chris@trotman.io>",
+  "license": "MIT",
+  "keywords": [
+    "AngularJS",
+    "Dropbox"
+  ]
+}
