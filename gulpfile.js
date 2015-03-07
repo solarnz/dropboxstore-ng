@@ -58,4 +58,4 @@ gulp.task('ngdocs', function() {
              .pipe(gulp.dest('./docs'));
 });
 
-gulp.task('default', ['lint', 'test']);
+gulp.task('default', ['lint', 'ngdoc', 'test']);
