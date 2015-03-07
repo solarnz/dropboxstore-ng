@@ -7,6 +7,7 @@ var _ = require('lodash');
 var jshint = require('gulp-jshint');
 var karma = require('gulp-karma');
 var mainBowerFiles = require('main-bower-files');
+var ngDocs = require('gulp-ngdocs');
 
 gulp.task('lint', ['lint:js']);
 gulp.task('lint:js', function() {
@@ -49,6 +50,12 @@ gulp.task('test:dev', function() {
       output: 'autowatch'
     }
   });
+});
+
+gulp.task('ngdocs', function() {
+  return gulp.src(require('./bower.json').main)
+             .pipe(ngDocs.process({}))
+             .pipe(gulp.dest('./docs'));
 });
 
 gulp.task('default', ['lint', 'test']);
