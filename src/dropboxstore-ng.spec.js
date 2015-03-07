@@ -7,7 +7,8 @@ describe('dropboxstore-ng', function() {
 
   var DropboxClientMock = function() {
     return {
-      authenticate: function() {}
+      authenticate: function() {},
+      getDatastoreManager: function() {}
     };
   };
   var dropboxClient;
@@ -127,6 +128,119 @@ describe('dropboxstore-ng', function() {
 
         it('should rejected with the error passed through', function() {
           expect(rejectedValue).toEqual('error');
+        });
+      });
+    });
+
+    describe('getDataStore method', function() {
+      var openDefaultDatastoreSpy;
+      var DropboxStore;
+
+      beforeEach(inject(function(_DropboxStore_) {
+        DropboxStore = _DropboxStore_;
+
+        openDefaultDatastoreSpy = jasmine.createSpy();
+        spyOn(dropboxClient, 'getDatastoreManager').and.returnValue(
+          {openDefaultDatastore: openDefaultDatastoreSpy}
+        );
+      }));
+
+      it('should call getDatastoreManager on the dropbox client', function() {
+        DropboxStore.getDataStore();
+        expect(dropboxClient.getDatastoreManager).toHaveBeenCalledWith();
+      });
+
+      it('should call openDefaultDatastore on the datastore manager',
+      function() {
+        DropboxStore.getDataStore();
+        expect(openDefaultDatastoreSpy).toHaveBeenCalledWith(
+          jasmine.any(Function)
+        );
+      });
+
+      it('should return a promise', function() {
+        var returnValue = DropboxStore.getDataStore();
+        expect(returnValue.then).toEqual(jasmine.any(Function));
+      });
+
+      describe('when getting the datastore succeeds', function() {
+        var resolved, resolvedValue;
+        beforeEach(function() {
+          openDefaultDatastoreSpy.and.callFake(function(cb) {
+            cb(null, {});
+          });
+
+          DropboxStore.getDataStore().then(function(value) {
+            resolved = true;
+            resolvedValue = value;
+          });
+
+          $rootScope.$apply();
+        });
+
+        it('should resolve the promise', function() {
+          expect(resolved).toBeTruthy();
+        });
+
+        it('should resolve the promise with the datastore', function() {
+          expect(resolvedValue).toEqual({});
+        });
+      });
+
+      describe('when getting the datastore fails', function() {
+        var rejected, rejectedValue;
+        beforeEach(function() {
+          openDefaultDatastoreSpy.and.callFake(function(cb) {
+            cb('error');
+          });
+
+          DropboxStore.getDataStore().catch(function(value) {
+            rejected = true;
+            rejectedValue = value;
+          });
+
+          $rootScope.$apply();
+        });
+
+        it('should reject the promise', function() {
+          expect(rejected).toBeTruthy();
+        });
+
+        it('should reject the promise with the datastore', function() {
+          expect(rejectedValue).toEqual('error');
+        });
+      });
+
+      describe('fetching the datastore twice', function() {
+        var DataStoreMock = function() {return {insert: function() {}};};
+        var dataStore, newDataStore;
+
+        beforeEach(function() {
+          openDefaultDatastoreSpy.and.callFake(function(cb) {
+            cb(null, new DataStoreMock());
+          });
+
+          DropboxStore.getDataStore().then(function(value) {
+            dataStore = value;
+          });
+          $rootScope.$apply();
+
+          DropboxStore.getDataStore().then(function(value) {
+            newDataStore = value;
+          });
+          $rootScope.$apply();
+        });
+
+        it('should cache the first datastore', function() {
+          expect(newDataStore).toEqual(dataStore);
+        });
+
+        it('should only call getDatastoreManager once', function() {
+          expect(dropboxClient.getDatastoreManager.calls.count()).toEqual(1);
+        });
+
+        it('should only call openDefaultDatastore once', function() {
+          expect(openDefaultDatastoreSpy.calls.count()).toEqual(1);
         });
       });
     });

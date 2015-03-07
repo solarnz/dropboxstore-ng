@@ -8,6 +8,8 @@ angular.module('dropboxstore-ng', [])
 })
 
 .service('DropboxStore', function($q, DropboxClientFactory) {
+  var datastorePromise;
+
   this.client = DropboxClientFactory;
 
   this.authenticate = function(options) {
@@ -22,5 +24,25 @@ angular.module('dropboxstore-ng', [])
       }
     });
     return promise.promise;
+  };
+
+  this.getDataStore = function() {
+    if (datastorePromise) {
+      return datastorePromise;
+    }
+
+    var promise = $q.defer();
+    datastorePromise = promise.promise;
+
+    this.client.getDatastoreManager().openDefaultDatastore(
+      function(error, datastore) {
+        if (!error) {
+          promise.resolve(datastore);
+        } else {
+          promise.reject(error);
+        }
+      }
+    );
+    return datastorePromise;
   };
 });
