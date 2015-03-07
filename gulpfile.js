@@ -66,11 +66,6 @@ gulp.task('test:ci', function() {
   });
 });
 
-gulp.task('coveralls', ['test:ci'], function() {
-  return gulp.src('coverate/**/lcov.info')
-             .pipe(coveralls());
-});
-
 gulp.task('ngdocs', function() {
   return gulp.src(require('./bower.json').main)
              .pipe(ngDocs.process({}))
@@ -99,4 +94,4 @@ gulp.task('release', function() { return inc('major'); });
 
 gulp.task('default', ['lint', 'ngdocs', 'test']);
 
-gulp.task('ci', ['lint', 'ngdocs', 'test:ci', 'coveralls']);
+gulp.task('ci', ['lint', 'ngdocs', 'test:ci']);
