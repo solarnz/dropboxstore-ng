@@ -13,6 +13,7 @@
     "karma-jasmine": "^0.3.5"
   },
   "devDependencies": {
+    "gulp-coveralls": "^0.1.3",
     "gulp-ngdocs": "^0.2.10",
     "jshint-stylish": "^1.0.1",
     "karma-coverage": "^0.2.7",

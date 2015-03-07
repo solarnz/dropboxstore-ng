@@ -4,6 +4,7 @@
 var gulp = require('gulp');
 
 var _ = require('lodash');
+var coveralls = require('gulp-coveralls');
 var jshint = require('gulp-jshint');
 var karma = require('gulp-karma');
 var mainBowerFiles = require('main-bower-files');
@@ -52,6 +53,20 @@ gulp.task('test:dev', function() {
   });
 });
 
+gulp.task('test:ci', function() {
+  return runKarma({
+    coverageReporter: {
+      type: 'lcov',
+      dir: 'coverage'
+    }
+  });
+});
+
+gulp.task('coveralls', ['test:ci'], function() {
+  return gulp.src('coverate/**/lcov.info')
+             .pipe(coveralls());
+});
+
 gulp.task('ngdocs', function() {
   return gulp.src(require('./bower.json').main)
              .pipe(ngDocs.process({}))
@@ -59,3 +74,5 @@ gulp.task('ngdocs', function() {
 });
 
 gulp.task('default', ['lint', 'ngdocs', 'test']);
+
+gulp.task('ci', ['lint', 'ngdocs', 'test:ci', 'coveralls']);
